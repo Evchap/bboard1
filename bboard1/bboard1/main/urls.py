@@ -2,10 +2,12 @@ from django.urls import path
 
 from .views import index, profile
 from .views import other_page, BBLoginView, BBLogoutView
+from .views import ChangeUserInfoView
 
 app_name = 'main'
 
 urlpatterns = [
+    path('accounts/profile/change/', ChangeUserInfoView.as_view(), name='profile_change'),
     path('accounts/logout/', BBLogoutView.as_view(), name='logout'),
     path('accounts/profile/', profile, name='profile'),
     path('accounts/login/', BBLoginView.as_view(), name='login'),
