@@ -3,7 +3,7 @@ from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 
 from .models import AdvUser
-# from .apps import user_registered
+from .apps import user_registered
 
 
 class ChangeUserInfoForm(forms.ModelForm):
