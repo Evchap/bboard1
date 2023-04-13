@@ -43,7 +43,7 @@ class SubRubric(Rubric):
     object = SubRubricManager()
 
     def __str__(self):
-        return '%s - s%' % (self.super_rubric.name, self.name)
+        return '%s - %s' % (self.super_rubric.name, self.name)
 
     class Meta:
         proxy = True
