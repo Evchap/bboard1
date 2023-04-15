@@ -8,7 +8,21 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
 from django.views.generic.edit import CreateView
 
+from django.views.generic.edit import UpdateView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import DeleteView
+from django.contrib.auth import logout
+from django.contrib import messages
+from django.core.signing import BadSignature
+
+from .utilities import signer
+from .models import AdvUser
+from .forms import ChangeUserInfoForm
 from .forms import RegisterUserForm
+
 def index(request):
     return render(request, 'main/index.html')
 
@@ -30,16 +44,6 @@ def profile(request):
 
 class BBLogoutView(LoginRequiredMixin, LogoutView):
     template_name = 'main/logout.html'
-
-
-from django.views.generic.edit import UpdateView
-from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404
-from django.views.generic.base import TemplateView
-
-from .models import AdvUser
-from .forms import ChangeUserInfoForm
 
 
 class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
@@ -75,11 +79,6 @@ class RegisterUserView(CreateView):
 class RegisterDoneView(TemplateView):
     template_name = 'main/register_done.html'
 
-
-from django.core.signing import BadSignature
-
-from .utilities import signer
-
 def user_activate(request, sign):
     try:
         username = signer.unsign(sign)
@@ -95,10 +94,6 @@ def user_activate(request, sign):
         user.save()
     return render(request, template)
 
-
-from django.views.generic.edit import DeleteView
-from django.contrib.auth import logout
-from django.contrib import messages
 
 class DeleteUserView(LoginRequiredMixin, DeleteView):
     model = AdvUser

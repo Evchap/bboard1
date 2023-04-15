@@ -6,6 +6,7 @@ from .models import AdvUser
 from .utilities import send_activation_notification
 from .models import SuperRubric, SubRubric
 from .forms import SubRubricForm
+from .models import Bb, AdditionalImage
 
 def send_activation_notifications(modeladmin, request,queryset):
     for rec in queryset:
@@ -41,24 +42,25 @@ class AdvUserAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'is_activated', 'date_joined')
     search_fields = ('username', 'email', 'first_name', 'last_name')
     list_filter = (NonactivatedFilter,)
-    fields = (('username', 'email'), ('first_name', 'last_name'),
+    fields = (('username', 'email'),
+              ('first_name', 'last_name'),
               ('send_messages', 'is_active', 'is_activated'),
               ('is_staff', 'is_superuser'),
               'groups', 'user_permissions',
               ('last_login', 'date_joined')
-              )
+            )
     readonly_fields = ('last_login', 'date_joined')
     actions = (send_activation_notifications,)
 
 admin.site.register(AdvUser, AdvUserAdmin)
 
 
-class SubRubricInLine(admin.TabularInline):
+class SubRubricInline(admin.TabularInline):
     model = SubRubric
 
 class SuperRubricAdmin(admin.ModelAdmin):
     exclude = ('super_rubric',)
-    inlines = (SubRubricInLine,)
+    inlines = (SubRubricInline,)
 
 admin.site.register(SuperRubric, SuperRubricAdmin)
 
@@ -68,4 +70,16 @@ class SubRubricAdmin(admin.ModelAdmin):
 
 admin.site.register(SubRubric, SubRubricAdmin)
 
+
+class AdditionalImageInline(admin.TabularInline):
+    model = AdditionalImage
+
+
+class BbAdmin(admin.ModelAdmin):
+    list_display = ('rubric', 'title', 'content', 'author', 'created_at')
+    fields = (('rubric', 'author'), 'title', 'content', 'price', 'contacts', 'image', 'is_active'
+              )
+    inlines = (AdditionalImageInline,)
+
+admin.site.register(Bb, BbAdmin)
 

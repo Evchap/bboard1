@@ -1,9 +1,9 @@
 from .models import SubRubric
 
 
-def bboard_context_processor(request):
+def bboard1_context_processor(request):
     context = {}
-    context['rubrics'] = SubRubric.object.all()
+    context['rubrics'] = SubRubric.objects.all()
     return context
 
 
