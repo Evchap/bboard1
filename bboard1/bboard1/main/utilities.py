@@ -1,12 +1,10 @@
 from django.template.loader import render_to_string
 # from bboard1.bboard1.settings import ALLOWED_HOSTS # n
 from django.core.signing import Signer
-
-# import sys
-# sys.path.append("..")
 from datetime import datetime
 from os.path import splitext
-
+# import sys
+# sys.path.append("..")
 
 import sys
 from pprint import pprint

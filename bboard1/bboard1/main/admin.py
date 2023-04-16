@@ -77,7 +77,8 @@ class AdditionalImageInline(admin.TabularInline):
 
 class BbAdmin(admin.ModelAdmin):
     list_display = ('rubric', 'title', 'content', 'author', 'created_at')
-    fields = (('rubric', 'author'), 'title', 'content', 'price', 'contacts', 'image', 'is_active'
+    fields = (('rubric', 'author'),
+              'title', 'content', 'price', 'contacts', 'image', 'is_active'
               )
     inlines = (AdditionalImageInline,)
 

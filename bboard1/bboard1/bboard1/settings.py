@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     #own
     'main.apps.MainConfig',
     'bootstrap4',
-    'django_cleanup',
     'easy_thumbnails',
+    'django_cleanup',
 ]
 
 MIDDLEWARE = [
