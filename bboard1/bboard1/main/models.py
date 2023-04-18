@@ -21,31 +21,31 @@ class AdvUser(AbstractUser):
     class Meta(AbstractUser.Meta):
         pass
 
-
 class Rubric(models.Model):
     name = models.CharField(max_length=20,
                             db_index=True,
-                            unique=True,
+                            unique = True,
                             verbose_name='Название'
                             )
-    order = models.SmallIntegerField(default=0,
+    order = models.SmallIntegerField(default = 0,
                                      db_index=True,
                                      verbose_name='Порядок'
                                      )
     super_rubric = models.ForeignKey('SuperRubric',
                                      on_delete=models.PROTECT,
-                                     null=True,
-                                     blank=True,
+                                     null = True,
+                                    blank = True,
                                      verbose_name='Надрубрика'
                                      )
 
-
 class SuperRubricManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(super_rubric__isnull=True)
+        return super().get_queryset().filter(super_rubric__isnull = True)
+
 
 class SuperRubric(Rubric):
     objects = SuperRubricManager()
+
     def __str__(self):
         return self.name
 
@@ -58,14 +58,15 @@ class SuperRubric(Rubric):
 
 class SubRubricManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(super_rubric__isnull=True)
+        return super().get_queryset().filter(super_rubric__isnull=False)
 
 class SubRubric(Rubric):
     objects = SubRubricManager()
 
-    def __repr__(self):
-        return f'{self.super_rubric.name} - {self.name}'
-
+    def __str__(self):
+        return f"{self.super_rubric.name} - {self.name}"
+#     def __repr__(self):
+#         return f'{self.super_rubric.name} - {self.name}'
 
     class Meta:
         proxy = True
@@ -85,7 +86,6 @@ class Bb(models.Model):
     is_active = models.BooleanField(default=True, db_index=True, verbose_name='Выводить в списке?')
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликовано')
 
-
     def delete(self, *args, **kwargs):
         for ai in self.additionalimage_set.all():
             ai.delete()
@@ -98,7 +98,7 @@ class Bb(models.Model):
 
 
 class AdditionalImage(models.Model):
-    bb = models.ForeignKey(Bb, on_delete=models.CASCADE,
+    bb = models.ForeignKey('Bb', on_delete=models.CASCADE,
                            verbose_name='Объявление')
     image = models.ImageField(upload_to=get_timestamp_path,
                               verbose_name='изображение')

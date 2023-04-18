@@ -1,33 +1,13 @@
 from django.template.loader import render_to_string
-# from bboard1.bboard1.settings import ALLOWED_HOSTS # n
 from django.core.signing import Signer
 from datetime import datetime
 from os.path import splitext
-# import sys
-# sys.path.append("..")
-
-import sys
-from pprint import pprint
-sys.path.append("/home/Python_Projects/bboard1")
-pprint(sys.path)
-
-
-
-# import bboard1.bboard1.settings
-
-# import settings # n
-# from settings import ALLOWED_HOSTS # n
-# from bboard1.settings import ALLOWED_HOSTS # n # No module named 'bboard1.bboard1' # n
 # from bboard1.bboard1.settings import ALLOWED_HOSTS # n
-
-
 
 signer = Signer()
 
 def send_activation_notification(user):
-    #----------------------inserted----------------------------------
     ALLOWED_HOSTS = []
-    # ----------------------endinserted----------------------------------
     if ALLOWED_HOSTS:
         host = 'http://' + ALLOWED_HOSTS[0]
     else:
