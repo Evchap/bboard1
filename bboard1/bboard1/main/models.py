@@ -17,7 +17,6 @@ class AdvUser(AbstractUser):
             bb.delete()
         super().delete(*args, **kwargs)
 
-
     class Meta(AbstractUser.Meta):
         pass
 
@@ -40,7 +39,7 @@ class Rubric(models.Model):
 
 class SuperRubricManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(super_rubric__isnull = True)
+        return super().get_queryset().filter(super_rubric__isnull=True)
 
 
 class SuperRubric(Rubric):
@@ -63,10 +62,14 @@ class SubRubricManager(models.Manager):
 class SubRubric(Rubric):
     objects = SubRubricManager()
 
+    # def __str__(self):
+    #     return f"{self.super_rubric.name} - {self.name}"
+
     def __str__(self):
-        return f"{self.super_rubric.name} - {self.name}"
-#     def __repr__(self):
-#         return f'{self.super_rubric.name} - {self.name}'
+        return '%s - %s' % (self.super_rubric.name, self.name)
+
+    # def __repr__(self):
+    #     return f"{self.super_rubric.name} - {self.name}"
 
     class Meta:
         proxy = True
