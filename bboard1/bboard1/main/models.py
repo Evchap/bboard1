@@ -33,7 +33,7 @@ class Rubric(models.Model):
     super_rubric = models.ForeignKey('SuperRubric',
                                      on_delete=models.PROTECT,
                                      null = True,
-                                    blank = True,
+                                     blank = True,
                                      verbose_name='Надрубрика'
                                      )
 
@@ -62,14 +62,20 @@ class SubRubricManager(models.Manager):
 class SubRubric(Rubric):
     objects = SubRubricManager()
 
-    # def __str__(self):
-    #     return f"{self.super_rubric.name} - {self.name}"
 
+    def __repr__(self):
+        return '%s - %s' % (self.super_rubric.name, self.name) # y
+        # return f"{self.super_rubric.name} - {self.name}" y
     def __str__(self):
-        return '%s - %s' % (self.super_rubric.name, self.name)
+        # return '%s - %s' % (self.super_rubric.name, self.name) # y
+        # return f"{self.super_rubric.name} - {self.name}" # http://127.0.0.1:8000/admin/main/bb/
+        # 'NoneType' object has no attribute 'name'
+        return str(self.super_rubric.name), str(self.name) # y # http://127.0.0.1:8000/admin/main/bb/
+        # __str__ returned non-string (type tuple)
 
-    # def __repr__(self):
-    #     return f"{self.super_rubric.name} - {self.name}"
+
+    # def __obj__(self):
+    #     return f"{self.super_rubric.name} - {self.name}" # n
 
     class Meta:
         proxy = True
@@ -89,23 +95,32 @@ class Bb(models.Model):
     is_active = models.BooleanField(default=True, db_index=True, verbose_name='Выводить в списке?')
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликовано')
 
+
+    def __repr__(self):
+        # return '%s - %s' % (self.rubric, self.title) # , self.content, self.price, self.author)
+        return str(self.rubric), str(self.author)
+        # return f"{self.rubric} {self.title} {self.author}"  # {self.content} {self.price}"
+    def __str__(self):
+        # return self.rubric, self.title, self.content, self.price, self.author
+        return str(self.rubric), str(self.author)
+        # return f"{self.rubric} {self.title} {self.author}" # {self.content} {self.price} {self.author}"
+
     def delete(self, *args, **kwargs):
         for ai in self.additionalimage_set.all():
             ai.delete()
         super().delete(*args, **kwargs)
 
     class Meta:
-        verbose_name_plural = 'Объявления'
         verbose_name = 'Объявление'
+        verbose_name_plural = 'Объявления'
         ordering = ['-created_at']
 
-
 class AdditionalImage(models.Model):
-    bb = models.ForeignKey('Bb', on_delete=models.CASCADE,
-                           verbose_name='Объявление')
+    bb = models.ForeignKey(Bb, on_delete=models.CASCADE,
+                               verbose_name='Объявление')
     image = models.ImageField(upload_to=get_timestamp_path,
-                              verbose_name='изображение')
+                                  verbose_name='Изображение')
 
     class Meta:
-        verbose_name_plural = 'Дополнительные иллюстрации'
         verbose_name = 'Дополнительная иллюстрация'
+        verbose_name_plural = 'Дополнительная иллюстрации'

@@ -4,3 +4,7 @@ header h1 {
 .root {
     font-size: larger;
 }
+
+img.additional-image {
+    widht: 180px;
+}
