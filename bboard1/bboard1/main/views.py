@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.http import HttpResponse, Http404
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
@@ -17,13 +18,22 @@ from django.views.generic.edit import DeleteView
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.core.signing import BadSignature
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 from .utilities import signer
 from .models import AdvUser
 from .forms import ChangeUserInfoForm
 from .forms import RegisterUserForm
+from .models import SubRubric,Bb # , Comment
+from .forms import SearchForm
+from .forms import BbForm, AIFormSet
+
+
 
 def index(request):
+    bbs = Bb.objects.filter(is_active=True) [:10]
+    context = {'bbs': bbs}
     return render(request, 'main/index.html')
 
 def other_page(request, page):
@@ -39,7 +49,9 @@ class BBLoginView(LoginView):
 
 @login_required
 def profile(request):
-    return render(request, 'main/profile.html')
+    bbs = Bb.objects.filter(author=request.user.pk)
+    context = {'bbs': bbs}
+    return render(request, 'main/profile.html', context)
 
 
 class BBLogoutView(LoginRequiredMixin, LogoutView):
@@ -115,11 +127,6 @@ class DeleteUserView(LoginRequiredMixin, DeleteView):
         return get_object_or_404(queryset, pk=self.user_id)
 
 
-from django.core.paginator import Paginator
-from django.db.models import Q
-from .models import SubRubric,Bb
-from .forms import SearchForm
-
 def by_rubric(request, pk):
     rubric = get_object_or_404(SubRubric, pk=pk)
     bbs = Bb.objects.filter(is_active=True, rubric=pk)
@@ -149,3 +156,62 @@ def detail(request, rubric_pk, pk):
     ais = bb.additionalimage_set.all()
     context = {'bb': bb, 'ais': ais}
     return render(request, 'main/detail.html', context)
+
+
+@login_required
+def profile_bb_detail(request, pk):
+    bb = get_object_or_404(Bb, pk=pk)
+    ais = bb.additionalimage_set.all()
+    # comments = Comment.objects.filter(bb=pk, is_active=True)
+    context = {'bb': bb, 'ais': ais} #, 'comments': comments}
+    return render(request, 'main/profile_bb_detail.html', context)
+
+
+@login_required
+def profile_bb_add(request):
+    if request.method == 'POST':
+        form = BbForm(request.POST, request.FILES)
+        if form.is_valid():
+            bb = form.save()
+            formset = AIFormSet(request.POST, request.FILES, instance=bb)
+            if formset.is_valid():
+                formset.save()
+                messages.add_message(request, messages.SUCCESS,
+                                     'Объявление добавлено')
+                return redirect('main:profile')
+    else:
+        form = BbForm(initial={'author': request.user.pk})
+        formset = AIFormSet()
+    context = {'form': form, 'formset': formset}
+    return render(request, 'main/profile_bb_add.html', context)
+
+@login_required
+def profile_bb_change(request, pk):
+    bb = get_object_or_404(Bb, pk=pk)
+    if request.method == 'POST':
+        form = BbForm(request.POST, request.FILES, instance=bb)
+        if form.is_valid():
+            bb = form.save()
+            formset = AIFormSet(request.POST, request.FILES, instance=bb)
+            if formset.is_valid():
+                formset.save()
+                messages.add_message(request, messages.SUCCESS,
+                                     'Объявление исправлено')
+                return redirect('main:profile')
+    else:
+        form = BbForm(instance=bb)
+        formset = AIFormSet(instance=bb)
+    context = {'form': form, 'formset': formset}
+    return render(request, 'main/profile_bb_change.html', context)
+
+@login_required
+def profile_bb_delete(request, pk):
+    bb = get_object_or_404(Bb, pk=pk)
+    if request.method == 'POST':
+        bb.delete()
+        messages.add_message(request, messages.SUCCESS,
+                             'Объявление удалено')
+        return redirect('main:profile')
+    else:
+        context = {'bb': bb}
+        return render(request, 'main/profile_bb_delete.html', context)
