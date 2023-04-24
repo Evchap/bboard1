@@ -23,19 +23,24 @@ class AdvUser(AbstractUser):
 class Rubric(models.Model):
     name = models.CharField(max_length=20,
                             db_index=True,
-                            unique = True,
                             verbose_name='Название'
                             )
-    order = models.SmallIntegerField(default = 0,
+    order = models.SmallIntegerField(default=0,
                                      db_index=True,
                                      verbose_name='Порядок'
                                      )
     super_rubric = models.ForeignKey('SuperRubric',
                                      on_delete=models.PROTECT,
-                                     null = True,
-                                     blank = True,
+                                     null=True,
+                                     blank=True,
                                      verbose_name='Надрубрика'
                                      )
+
+    def __repr__(self):
+        return str(self.name), str(self.order), str(self.super_rubric)
+
+    def __str__(self):
+        return str(self.name), str(self.order), str(self.super_rubric) #
 
 class SuperRubricManager(models.Manager):
     def get_queryset(self):
@@ -45,17 +50,25 @@ class SuperRubricManager(models.Manager):
 class SuperRubric(Rubric):
     objects = SuperRubricManager()
 
-    def __str__(self):
-        return self.name
 
     class Meta:
         proxy = True
-        ordering = ('order', 'name')
+        ordering = ('order', 'name') # -> ordering: tuple[str, str] = ('order', 'name')
         verbose_name = 'Надрубрика'
         verbose_name_plural = 'Надрубрики'
 
+    def __repr__(self):
+        return str(self.name)
+
+    def __str__(self):
+        return str(self.name) # y
 
 class SubRubricManager(models.Manager):
+    def __repr__(self):
+        return str(self.name)
+
+    def __str__(self):
+        return str(self.name)
     def get_queryset(self):
         return super().get_queryset().filter(super_rubric__isnull=False)
 
@@ -64,18 +77,14 @@ class SubRubric(Rubric):
 
 
     def __repr__(self):
-        return '%s - %s' % (self.super_rubric.name, self.name) # y
-        # return f"{self.super_rubric.name} - {self.name}" y
+        return '{} {}'.format(str(self.super_rubric.name), str(self.name))
+
+
     def __str__(self):
-        # return '%s - %s' % (self.super_rubric.name, self.name) # y
-        # return f"{self.super_rubric.name} - {self.name}" # http://127.0.0.1:8000/admin/main/bb/
-        # 'NoneType' object has no attribute 'name'
-        return str(self.super_rubric.name), str(self.name) # y # http://127.0.0.1:8000/admin/main/bb/
-        # __str__ returned non-string (type tuple)
+        if self.name is not None:
+            return '{}'.format(str(self.name))
+        return '{} {}'.format(str(self.super_rubric.name), str(self.name))
 
-
-    # def __obj__(self):
-    #     return f"{self.super_rubric.name} - {self.name}" # n
 
     class Meta:
         proxy = True
@@ -96,15 +105,8 @@ class Bb(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликовано')
 
 
-    def __repr__(self):
-        # return '%s - %s' % (self.rubric, self.title) # , self.content, self.price, self.author)
-        return str(self.rubric), str(self.author)
-        # return f"{self.rubric} {self.title} {self.author}"  # {self.content} {self.price}"
     def __str__(self):
-        # return self.rubric, self.title, self.content, self.price, self.author
-        return str(self.rubric), str(self.author)
-        # return f"{self.rubric} {self.title} {self.author}" # {self.content} {self.price} {self.author}"
-
+        return '{} {}'.format(str(self.rubric.name), str(self.title))
     def delete(self, *args, **kwargs):
         for ai in self.additionalimage_set.all():
             ai.delete()
