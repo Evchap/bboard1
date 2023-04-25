@@ -128,18 +128,18 @@ class AdditionalImage(models.Model):
         verbose_name_plural = 'Дополнительная иллюстрации'
 
 
-# class Comment(models.Model):
-#     bb = models.ForeignKey(Bb, on_delete=models.CASCADE, verbose_name='Объявление')
-#     author = models.CharField(max_length=30, verbose_name='Автор')
-#     content = models.TextField(verbose_name='Содержание')
-#     is_active = models.BooleanField(default=True, db_index=True, verbose_name='Выводить на экран?')
-#     created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликован')
-#
-#     class Meta:
-#         verbose_name_plural = 'Комментарии'
-#         verbose_name = 'Комментарий'
-#         ordering = ['created_at']
-#
-#
+class Comment(models.Model):
+    bb = models.ForeignKey(Bb, on_delete=models.CASCADE, verbose_name='Объявление')
+    author = models.CharField(max_length=30, verbose_name='Автор')
+    content = models.TextField(verbose_name='Содержание')
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name='Выводить на экран?')
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Опубликован')
+
+    class Meta:
+        verbose_name_plural = 'Комментарии'
+        verbose_name = 'Комментарий'
+        ordering = ['created_at']
+
+
 # user_registrated = Signal(providing_args=["instance"])
 

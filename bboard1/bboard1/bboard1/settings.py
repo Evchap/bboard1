@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'easy_thumbnails',
     'django_cleanup',
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -152,3 +153,5 @@ THUMBNAIL_ALIASES = {
     },
 }
 THUMBNAIL_BASEDIR = 'thumbnails'
+
+SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']

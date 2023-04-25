@@ -31,9 +31,12 @@
 страницы сведений о сайте, о правах его разработчика, пользовательского соглашения и пр.
 
 
-HOW TO RUN
 
-Superuser
-Name: admin
-E-mail address: admin@admin.com          
-Password: 12345
+
+Superuser:  
+> Name:           postgres  
+  E-mail address: postgres@postgres.com            
+  Password:       postgres
+
+HOW TO RUN:
+>python3 manage.py runserver --nostatic
