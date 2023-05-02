@@ -3,9 +3,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
-from bboard1.main.models import Bb, Comment
+import main.models
+from main.models import Bb, Comment
 from .serializers import BbSerializer, BbDetailSerializer, CommentSerializer
+
 
 @api_view(['GET'])
 def bbs(request):
@@ -32,6 +33,6 @@ def comments(request, pk):
         comments = Comment.objects.filter(is_active=True, bb=pk)
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data)
-        
-        
+
+
 # test

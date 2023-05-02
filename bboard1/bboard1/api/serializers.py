@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from easy_thumbnails.files import get_thumbnailer
-
 from main.models import Bb, Comment
 
 class BbSerializer(serializers.ModelSerializer):
