@@ -1,7 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from .utilities import get_timestamp_path
 from django.dispatch import Signal
+from django.db.models.signals import post_save
+
+from .utilities import send_new_comment_notification
+from .utilities import send_activation_notification, get_timestamp_path
+
 
 class AdvUser(AbstractUser):
     is_activated = models.BooleanField(default=True,
@@ -143,3 +147,9 @@ class Comment(models.Model):
 
 # user_registrated = Signal(providing_args=["instance"])
 
+def post_save_dispatcher(sender, **kwargs):
+    author = kwargs['instance'].bb.author
+    if kwargs['created'] and author.send_messages:
+        send_new_comment_notification(kwargs['instance'])
+
+post_save.connect(post_save_dispatcher, sender=Comment)

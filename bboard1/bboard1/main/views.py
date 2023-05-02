@@ -4,7 +4,8 @@ from django.http import HttpResponse, Http404
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, \
+    PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
 from django.views.generic.edit import CreateView
@@ -64,6 +65,11 @@ class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     form_class = ChangeUserInfoForm
     success_url = reverse_lazy('main:profile')
     success_message = 'Данные пользователя изменены'
+
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     self.user_id = request.user.pk
+    #     return super().dispatch(request, *args, **kwargs)
 
     def setup(self, request, *args, **kwargs):
         self.user_id = request.user.pk
@@ -125,6 +131,24 @@ class DeleteUserView(LoginRequiredMixin, DeleteView):
         if not queryset:
             queryset = self.get_queryset()
         return get_object_or_404(queryset, pk=self.user_id)
+
+
+# class BBPasswordResetView(PasswordResetView):
+#     template_name = 'main/password_reset.html'
+#     subject_template_name = 'email/reset_letter_subject.txt'
+#     email_template_name = 'email/reset_letter_body.txt'
+#     success_url = reverse_lazy('main:password_reset_done')
+#
+# class BBPasswordResetDoneView(PasswordResetDoneView):
+#     template_name = 'main/password_reset_done.html'
+#
+# class BBPasswordResetConfirmView(PasswordResetConfirmView):
+#     template_name = 'main/password_confirm.html'
+#     success_url = reverse_lazy('main:password_reset_complete')
+#
+# class BBPasswordResetCompleteView(PasswordResetCompleteView):
+#     template_name = 'main/password_complete.html'
+
 
 
 def by_rubric(request, pk):

@@ -4,6 +4,7 @@ import datetime
 from .models import AdvUser
 from .models import SuperRubric, SubRubric
 from .models import Bb, AdditionalImage
+from .models import Comment
 from .utilities import send_activation_notification
 from .forms import SubRubricForm
 
@@ -84,3 +85,14 @@ class BbAdmin(admin.ModelAdmin):
 
 admin.site.register(Bb, BbAdmin)
 
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('author', 'content', 'created_at', 'is_active')
+    list_display_links = ('author', 'content')
+    list_filter = ('is_active',)
+    search_fields = ('author', 'content',)
+    date_hierarchy = 'created_at'
+    fields = ('author', 'content', 'is_active', 'created_at')
+    readonly_fields = ('created_at',)
+
+admin.site.register(Comment, CommentAdmin)

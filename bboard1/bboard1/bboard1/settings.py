@@ -44,11 +44,15 @@ INSTALLED_APPS = [
     'easy_thumbnails',
     'django_cleanup',
     'captcha',
+# 'rest_framework',
+# 'corsheaders',
+# 'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+# 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -70,6 +74,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 #own
+                # 'social_django.context_processors.backends',
+                # 'social_django.context_processors.login_redirect',
+
                 'main.middlewares.bboard1_context_processor',
             ],
         },
@@ -143,6 +150,25 @@ EMAIL_PORT = 1025
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+# # EMAIL_HOST = 'smtp.bboard.ru'
+# # EMAIL_PORT = 465
+# # EMAIL_USE_SSL = True
+# # EMAIL_HOST_USER = 'admin@bboard.ru'
+# # EMAIL_HOST_PASSWORD = '-----------'
+# # DEFAULT_FROM_EMAIL = 'admin@bboard.ru'
+#
+# AUTHENTICATION_BACKENDS = (
+#     'social_core.backends.vk.VKOAuth2',
+#     'django.contrib.auth.backends.ModelBackend',
+# )
+#
+# # SOCIAL_AUTH_VK_OAUTH2_KEY = '-------'
+# # SOCIAL_AUTH_VK_OAUTH2_SECRET = '----------------'
+# SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
+#
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'
+
 
 THUMBNAIL_ALIASES = {
     '': {
@@ -155,3 +181,6 @@ THUMBNAIL_ALIASES = {
 THUMBNAIL_BASEDIR = 'thumbnails'
 
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
+
+# CORS_ORIGIN_ALLOW_ALL = True
+# CORS_URLS_REGEX = r'^/api/.*$'
